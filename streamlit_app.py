@@ -93,12 +93,14 @@ if uploaded_file is not None:
         with st.spinner("Processing image..."):
             image = Image.open(uploaded_file).convert('RGB')  # Ensure the image is in RGB format
             image = image.resize((256, 256))
-            img_array = np.array(image) / 255.0
+            img_array = np.array(image, dtype=np.float32) / 255.0
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
 
+            # Print the shape of the image array for debugging
+            st.write("Preprocessed Image Array Shape:", img_array.shape)
+            
             st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
-            st.write("Preprocessed Image Array:", img_array)
-
+            
             # Make prediction
             try:
                 predictions = model.predict(img_array)
