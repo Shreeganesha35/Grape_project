@@ -116,7 +116,10 @@ if uploaded_file is not None:
 
                 # Apply thresholds
                 class_confidences = {categories[i]: predictions[0][i] for i in range(len(categories))}
+                st.write("Class confidences:", class_confidences)
+
                 valid_predictions = {cls: conf for cls, conf in class_confidences.items() if conf >= thresholds[cls]}
+                st.write("Valid predictions after threshold:", valid_predictions)
                 
                 if valid_predictions:
                     predicted_label = max(valid_predictions, key=valid_predictions.get)
