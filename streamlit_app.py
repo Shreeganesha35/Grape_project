@@ -93,7 +93,7 @@ if uploaded_file is not None:
         with st.spinner("Processing image..."):
             image = Image.open(uploaded_file).convert('RGB')  # Ensure the image is in RGB format
             image = image.resize((256, 256))  # Resize image to match the model input size
-            img_array = np.array(image, dtype=np.float32) / 256.0  # Normalize the image
+            img_array = np.array(image, dtype=np.float64) / 255.0  # Normalize the image
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
   
             st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
