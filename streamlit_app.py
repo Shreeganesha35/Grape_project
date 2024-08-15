@@ -24,7 +24,7 @@ thresholds = {
     "ESCA": 0.1,
     "Healthy": 0.1,
     "Leaf Blight": 0.1,
-    "Healthy_Pomogranate": 9.0,
+    "Healthy_Pomogranate": 0.1,
     "Cercospora": 0.1,
     "Bacterial_Blight": 0.1,
     "Anthracnose": 0.1
@@ -120,13 +120,15 @@ if uploaded_file is not None:
 
                 valid_predictions = {cls: conf for cls, conf in class_confidences.items() if conf >= thresholds[cls]}
                 st.write("Valid predictions after threshold:", valid_predictions)
-                
+
+                # Determine the final prediction
                 if valid_predictions:
                     predicted_label = max(valid_predictions, key=valid_predictions.get)
                     confidence = valid_predictions[predicted_label]
                 else:
-                    predicted_label = "Uncertain"
-                    confidence = 0.0
+                    # If no class meets the threshold, use the top prediction
+                    predicted_label = max(class_confidences, key=class_confidences.get)
+                    confidence = class_confidences[predicted_label]
 
                 # Display prediction in a styled box with bold text
                 st.markdown(f"""
@@ -135,6 +137,11 @@ if uploaded_file is not None:
                         <b>Confidence:</b> {confidence:.2f}
                     </div>
                 """, unsafe_allow_html=True)
+
+                # Detailed logging
+                st.write("Detailed prediction information:")
+                for cls in categories:
+                    st.write(f"{cls}: {class_confidences[cls]:.8f}")
 
             except Exception as e:
                 st.error(f"Error during prediction: {e}")
