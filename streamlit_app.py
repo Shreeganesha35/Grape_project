@@ -101,11 +101,20 @@ if uploaded_file is not None:
             # Make prediction
             try:
                 predictions = model.predict(img_array)
-                st.write("Raw predictions:", predictions)
-
+                
+                # Get predictions for specific categories
+                healthy_pomogranate_pred = predictions[0][categories.index("Healthy_Pomogranate")]
+                cercospora_pred = predictions[0][categories.index("Cercospora")]
+                
+                # Overall prediction
                 predicted_class = np.argmax(predictions[0])
                 predicted_label = categories[predicted_class]
                 confidence = predictions[0][predicted_class]
+
+                # Display raw predictions and specific category predictions
+                st.write("Raw predictions:", predictions)
+                st.write("Predictions for Healthy_Pomogranate:", healthy_pomogranate_pred)
+                st.write("Predictions for Cercospora:", cercospora_pred)
 
                 # Display prediction in a styled box with bold text
                 st.markdown(f"""
