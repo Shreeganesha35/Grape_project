@@ -97,7 +97,8 @@ if uploaded_file is not None:
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
 
             st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
-            
+            st.write("Preprocessed Image Array:", img_array)
+
             # Make prediction
             try:
                 predictions = model.predict(img_array)
