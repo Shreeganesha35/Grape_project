@@ -101,6 +101,9 @@ if uploaded_file is not None:
             # Make prediction
             try:
                 predictions = model.predict(img_array)
+ st.write("Raw predictions:", predictions)
+
+                predictions = model.predict(img_array)
                 predicted_class = np.argmax(predictions[0])
                 predicted_label = categories[predicted_class]
                 confidence = predictions[0][predicted_class]
