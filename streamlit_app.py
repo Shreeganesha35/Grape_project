@@ -20,8 +20,14 @@ except Exception as e:
 # Define categories and thresholds
 categories = ["Black Rot", "ESCA", "Healthy", "Leaf Blight", "Healthy_Pomogranate", "Cercospora", "Bacterial_Blight", "Anthracnose"]
 thresholds = {
-    "Healthy_Pomogranate": 0.2,  # Set your threshold for Healthy_Pomogranate
-    "Cercospora": 0.2            # Set your threshold for Cercospora
+    "Black Rot": 0.1,
+    "ESCA": 0.1,
+    "Healthy": 0.1,
+    "Leaf Blight": 0.1,
+    "Healthy_Pomogranate": 0.1,
+    "Cercospora": 0.1,
+    "Bacterial_Blight": 0.1,
+    "Anthracnose": 0.1
 }
 
 # Apply custom CSS for background and prediction box styling
@@ -109,15 +115,13 @@ if uploaded_file is not None:
                 st.write("Raw predictions:", predictions)
 
                 # Apply thresholds
-                predicted_class = np.argmax(predictions[0])
-                predicted_label = categories[predicted_class]
-                confidence = predictions[0][predicted_class]
-
-                # Adjust prediction based on thresholds
-                if predicted_label == "Healthy_Pomogranate" and confidence < thresholds["Healthy_Pomogranate"]:
-                    predicted_label = "Uncertain"
-                    confidence = 0.0
-                elif predicted_label == "Cercospora" and confidence < thresholds["Cercospora"]:
+                class_confidences = {categories[i]: predictions[0][i] for i in range(len(categories))}
+                valid_predictions = {cls: conf for cls, conf in class_confidences.items() if conf >= thresholds[cls]}
+                
+                if valid_predictions:
+                    predicted_label = max(valid_predictions, key=valid_predictions.get)
+                    confidence = valid_predictions[predicted_label]
+                else:
                     predicted_label = "Uncertain"
                     confidence = 0.0
 
