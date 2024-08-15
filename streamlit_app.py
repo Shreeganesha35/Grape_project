@@ -68,7 +68,7 @@ st.markdown("""
     }
     /* Style for the text */
     p, .stMarkdown {
-        font-family: 'Arial', sans-serif';
+        font-family: 'Arial', sans-serif;
         font-size: 1.2rem;
         color: #ffffff;
         text-align: center;
@@ -95,15 +95,14 @@ if uploaded_file is not None:
             image = image.resize((256, 256))  # Resize image to match the model input size
             img_array = np.array(image, dtype=np.float32) / 255.0  # Normalize the image
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
-  
+
             st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
             
             # Make prediction
             try:
                 predictions = model.predict(img_array)
- st.write("Raw predictions:", predictions)
+                st.write("Raw predictions:", predictions)
 
-                predictions = model.predict(img_array)
                 predicted_class = np.argmax(predictions[0])
                 predicted_label = categories[predicted_class]
                 confidence = predictions[0][predicted_class]
