@@ -9,7 +9,7 @@ def load_model_cached(model_path):
     return load_model(model_path)
 
 # Load the trained model
-model_path = 'grape_and_Pomogranate_disease_streamlit.h5'
+model_path = 'grape_and_Pomogranate_disease_2.0.h5'
 try:
     model = load_model_cached(model_path)
     st.success("Model loaded successfully!")
