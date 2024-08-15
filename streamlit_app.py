@@ -17,8 +17,12 @@ except Exception as e:
     st.error(f"Error loading model: {e}")
     st.stop()
 
-# Define categories
+# Define categories and thresholds
 categories = ["Black Rot", "ESCA", "Healthy", "Leaf Blight", "Healthy_Pomogranate", "Cercospora", "Bacterial_Blight", "Anthracnose"]
+thresholds = {
+    "Healthy_Pomogranate": 0.05,  # Set your threshold for Healthy_Pomogranate
+    "Cercospora": 0.05            # Set your threshold for Cercospora
+}
 
 # Apply custom CSS for background and prediction box styling
 st.markdown("""
@@ -104,9 +108,18 @@ if uploaded_file is not None:
                 predictions = model.predict(img_array)
                 st.write("Raw predictions:", predictions)
 
+                # Apply thresholds
                 predicted_class = np.argmax(predictions[0])
                 predicted_label = categories[predicted_class]
                 confidence = predictions[0][predicted_class]
+
+                # Adjust prediction based on thresholds
+                if predicted_label == "Healthy_Pomogranate" and confidence < thresholds["Healthy_Pomogranate"]:
+                    predicted_label = "Uncertain"
+                    confidence = 0.0
+                elif predicted_label == "Cercospora" and confidence < thresholds["Cercospora"]:
+                    predicted_label = "Uncertain"
+                    confidence = 0.0
 
                 # Display prediction in a styled box with bold text
                 st.markdown(f"""
@@ -115,10 +128,6 @@ if uploaded_file is not None:
                         <b>Confidence:</b> {confidence:.2f}
                     </div>
                 """, unsafe_allow_html=True)
-
-                # Additional predictions for specific classes
-                st.write("Predictions for Healthy_Pomogranate:", predictions[0][categories.index("Healthy_Pomogranate")])
-                st.write("Predictions for Cercospora:", predictions[0][categories.index("Cercospora")])
 
             except Exception as e:
                 st.error(f"Error during prediction: {e}")
