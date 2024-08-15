@@ -91,6 +91,7 @@ if uploaded_file is not None:
     try:
         # Display loading spinner
         with st.spinner("Processing image..."):
+            # Preprocess the image
             image = Image.open(uploaded_file).convert('RGB')  # Ensure the image is in RGB format
             image = image.resize((256, 256))  # Resize image to match the model input size
             img_array = np.array(image, dtype=np.float32) / 255.0  # Normalize the image
@@ -101,20 +102,11 @@ if uploaded_file is not None:
             # Make prediction
             try:
                 predictions = model.predict(img_array)
-                
-                # Get predictions for specific categories
-                healthy_pomogranate_pred = predictions[0][categories.index("Healthy_Pomogranate")]
-                cercospora_pred = predictions[0][categories.index("Cercospora")]
-                
-                # Overall prediction
+                st.write("Raw predictions:", predictions)
+
                 predicted_class = np.argmax(predictions[0])
                 predicted_label = categories[predicted_class]
                 confidence = predictions[0][predicted_class]
-
-                # Display raw predictions and specific category predictions
-                st.write("Raw predictions:", predictions)
-                st.write("Predictions for Healthy_Pomogranate:", healthy_pomogranate_pred)
-                st.write("Predictions for Cercospora:", cercospora_pred)
 
                 # Display prediction in a styled box with bold text
                 st.markdown(f"""
@@ -123,6 +115,10 @@ if uploaded_file is not None:
                         <b>Confidence:</b> {confidence:.2f}
                     </div>
                 """, unsafe_allow_html=True)
+
+                # Additional predictions for specific classes
+                st.write("Predictions for Healthy_Pomogranate:", predictions[0][categories.index("Healthy_Pomogranate")])
+                st.write("Predictions for Cercospora:", predictions[0][categories.index("Cercospora")])
 
             except Exception as e:
                 st.error(f"Error during prediction: {e}")
