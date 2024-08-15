@@ -95,10 +95,7 @@ if uploaded_file is not None:
             image = image.resize((256, 256))
             img_array = np.array(image, dtype=np.float32) / 255.0
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
-
-            # Print the shape of the image array for debugging
-            st.write("Preprocessed Image Array Shape:", img_array.shape)
-            
+  
             st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
             
             # Make prediction
