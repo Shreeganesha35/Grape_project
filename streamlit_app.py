@@ -9,7 +9,7 @@ def load_model_cached(model_path):
     return load_model(model_path)
 
 # Load the trained model
-model_path = 'grape_and_Pomogranate_disease_2.0.h5'
+model_path = 'grape_and_Pomogranate_disease_streamlit.h5'
 try:
     model = load_model_cached(model_path)
     st.success("Model loaded successfully!")
@@ -91,7 +91,7 @@ if uploaded_file is not None:
     try:
         # Display loading spinner
         with st.spinner("Processing image..."):
-            image = Image.open(uploaded_file)
+            image = Image.open(uploaded_file).convert('RGB')  # Ensure the image is in RGB format
             image = image.resize((256, 256))
             img_array = np.array(image) / 255.0
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
