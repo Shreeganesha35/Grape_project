@@ -10,9 +10,9 @@ thresholds = {
     "ESCA": 0.1,
     "Healthy": 0.1,
     "Leaf Blight": 0.1,
-    "Healthy_Pomogranate": 0.01,
+    "Healthy_Pomogranate": 0.01,  # Reduced to allow more flexibility
     "Cercospora": 0.1,
-    "Bacterial_Blight": 0.5,
+    "Bacterial_Blight": 0.5,      # Increased to require higher confidence
     "Anthracnose": 0.1
 }
 
