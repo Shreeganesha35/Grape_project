@@ -68,7 +68,7 @@ st.markdown("""
     }
     /* Style for the text */
     p, .stMarkdown {
-        font-family: 'Arial', sans-serif;
+        font-family: 'Arial', sans-serif';
         font-size: 1.2rem;
         color: #ffffff;
         text-align: center;
@@ -92,8 +92,8 @@ if uploaded_file is not None:
         # Display loading spinner
         with st.spinner("Processing image..."):
             image = Image.open(uploaded_file).convert('RGB')  # Ensure the image is in RGB format
-            image = image.resize((256, 256))
-            img_array = np.array(image, dtype=np.float32) / 255.0
+            image = image.resize((256, 256))  # Resize image to match the model input size
+            img_array = np.array(image, dtype=np.float32) / 255.0  # Normalize the image
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
   
             st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
