@@ -26,7 +26,7 @@ thresholds = {
     "Leaf Blight": 0.1,
     "Healthy_Pomogranate": 0.2,  # Increased threshold
     "Cercospora": 0.1,
-    "Bacterial_Blight": 1.0,    # Increased threshold
+    "Bacterial_Blight": 0.5,    # Increased threshold
     "Anthracnose": 0.1
 }
 
@@ -102,7 +102,7 @@ if uploaded_file is not None:
         # Display loading spinner
         with st.spinner("Processing image..."):
             # Preprocess the image
-            image = Image.open(uploaded_file).convert('RGB')  # Ensure the image is in RGB format
+            image = Image.open(uploaded_file).convert('BGR')  # Ensure the image is in RGB format
             image = image.resize((256, 256))  # Resize image to match the model input size
             img_array = np.array(image, dtype=np.float32) / 255.0  # Normalize the image
             img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
