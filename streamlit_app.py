@@ -20,8 +20,8 @@ except Exception as e:
 # Define categories and thresholds
 categories = ["Black Rot", "ESCA", "Healthy", "Leaf Blight", "Healthy_Pomogranate", "Cercospora", "Bacterial_Blight", "Anthracnose"]
 thresholds = {
-    "Healthy_Pomogranate": 0.6,  # Set your threshold for Healthy_Pomogranate
-    "Cercospora": 0.05            # Set your threshold for Cercospora
+    "Healthy_Pomogranate": 1.0,  # Set your threshold for Healthy_Pomogranate
+    "Cercospora": 1.0            # Set your threshold for Cercospora
 }
 
 # Apply custom CSS for background and prediction box styling
