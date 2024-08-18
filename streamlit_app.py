@@ -40,7 +40,7 @@ fun_facts = {
 # Special messages for healthy predictions
 special_messages = {
     "Healthy_Pomogranate": "Enjoy your fruit! Pomegranates are rich in antioxidants and vitamins.",
-    "Healthy": "Enjoy your grapes! Grapes are a great source of vitamins and antioxidants."
+    "Healthy": "Great news! Your grape leaves are in excellent condition. Healthy grape leaves contribute to better grape quality and higher yield."
 }
 
 # Function to apply thresholds
