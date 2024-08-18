@@ -31,6 +31,18 @@ disease_info = {
     "Anthracnose": "Anthracnose causes dark, sunken spots on pomegranate fruit, affecting its quality."
 }
 
+# Fun facts about plants
+fun_facts = {
+    "Grape": "Did you know? Grapes are one of the oldest cultivated crops, dating back 8,000 years.",
+    "Pomegranate": "Fun fact: Pomegranates can contain up to 1,400 seeds!"
+}
+
+# Special messages for healthy predictions
+special_messages = {
+    "Healthy_Pomogranate": "Enjoy your fruit! Pomegranates are rich in antioxidants and vitamins.",
+    "Healthy": "Enjoy your grapes! Grapes are a great source of vitamins and antioxidants."
+}
+
 # Function to apply thresholds
 def apply_thresholds(predictions, thresholds):
     return {cls: conf for cls, conf in predictions.items() if conf >= thresholds.get(cls, 0)}
@@ -229,6 +241,12 @@ if uploaded_file is not None:
                 if filtered_predictions:
                     top_prediction = max(filtered_predictions, key=filtered_predictions.get)
                     confidence = filtered_predictions[top_prediction]
+
+                    # Special message for "Healthy_Pomogranate" or "Healthy" predictions
+                    special_message = ""
+                    if top_prediction in special_messages:
+                        special_message = special_messages[top_prediction]
+                    
                     st.markdown(f"""
                         <div class="prediction-box">
                             <b>Prediction:</b> {top_prediction} <br>
@@ -242,6 +260,15 @@ if uploaded_file is not None:
                             <b>About {top_prediction}:</b> {disease_info.get(top_prediction, "No information available.")}
                         </div>
                     """, unsafe_allow_html=True)
+
+                    # Display special message if applicable
+                    if special_message:
+                        st.markdown(f"""
+                            <div class="prediction-box">
+                                {special_message}
+                            </div>
+                        """, unsafe_allow_html=True)
+                        
                 else:
                     st.write("No valid predictions after applying thresholds.")
 
