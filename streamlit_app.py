@@ -37,7 +37,6 @@ pomegranate_model_path = 'grape_and_Pomogranate_disease_2.0.h5'
 try:
     grape_model = load_model_cached(grape_model_path)
     pomegranate_model = load_model_cached(pomegranate_model_path)
-    st.success("Models loaded successfully!")
 except Exception as e:
     st.error(f"Error loading models: {e}")
     st.stop()
