@@ -51,70 +51,128 @@ except Exception as e:
     st.error(f"Error loading models: {e}")
     st.stop()
 
-# Apply custom CSS for background, image, and prediction box styling
-st.markdown("""
-    <style>
-    /* Apply gradient background with an overlay image */
-    .reportview-container, .sidebar .sidebar-content {
-        background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #3b0a45, #000000);
-        color: #ffffff;
-    }
-    /* Reduce image size with rounded corners and shadow */
-    .stImage img {
-        max-width: 40%; /* Reduced size */
-        border-radius: 20px;
-        border: 3px solid #6a1b9a;
-        margin: 0 auto;
-        display: block;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        transition: box-shadow 0.3s;
-    }
-    .stImage img:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
-    }
-    /* Style for the prediction box with gradient background and shadow */
-    .prediction-box {
-        border: 2px solid #6a1b9a;
-        border-radius: 10px;
-        padding: 15px;
-        background: linear-gradient(to bottom, #6a1b9a, #000000);
-        color: white;
-        text-align: center;
-        font-size: 20px;
-        margin-top: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .prediction-box:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
-    }
-    h1 {
-        font-family: 'Arial', sans-serif;
-        font-size: 2.5rem;
-        color: #ffffff;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    p, .stMarkdown {
-        font-family: 'Arial', sans-serif;
-        font-size: 1.2rem;
-        color: #ffffff;
-        text-align: center;
-    }
-    /* Add subtle animation to icons or any additional features */
-    .feature-icon {
-        font-size: 50px;
-        color: #ffffff;
-        margin: 10px;
-        transition: transform 0.3s, color 0.3s;
-    }
-    .feature-icon:hover {
-        transform: scale(1.2);
-        color: #6a1b9a;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Function to get CSS based on model choice
+def get_css(model_choice):
+    if model_choice == "Grape":
+        return """
+            <style>
+            .reportview-container, .sidebar .sidebar-content {
+                background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #3b0a45, #000000);
+                color: #ffffff;
+            }
+            .stImage img {
+                max-width: 40%;
+                border-radius: 20px;
+                border: 3px solid #6a1b9a;
+                margin: 0 auto;
+                display: block;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: box-shadow 0.3s;
+            }
+            .stImage img:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            .prediction-box {
+                border: 2px solid #6a1b9a;
+                border-radius: 10px;
+                padding: 15px;
+                background: linear-gradient(to bottom, #6a1b9a, #000000);
+                color: white;
+                text-align: center;
+                font-size: 20px;
+                margin-top: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .prediction-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            h1 {
+                font-family: 'Arial', sans-serif;
+                font-size: 2.5rem;
+                color: #ffffff;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            p, .stMarkdown {
+                font-family: 'Arial', sans-serif;
+                font-size: 1.2rem;
+                color: #ffffff;
+                text-align: center;
+            }
+            .feature-icon {
+                font-size: 50px;
+                color: #ffffff;
+                margin: 10px;
+                transition: transform 0.3s, color 0.3s;
+            }
+            .feature-icon:hover {
+                transform: scale(1.2);
+                color: #6a1b9a;
+            }
+            </style>
+        """
+    else:  # Pomegranate
+        return """
+            <style>
+            .reportview-container, .sidebar .sidebar-content {
+                background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #F5D3D0, #D84727);
+                color: #ffffff;
+            }
+            .stImage img {
+                max-width: 40%;
+                border-radius: 20px;
+                border: 3px solid #D84727;
+                margin: 0 auto;
+                display: block;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: box-shadow 0.3s;
+            }
+            .stImage img:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            .prediction-box {
+                border: 2px solid #D84727;
+                border-radius: 10px;
+                padding: 15px;
+                background: linear-gradient(to bottom, #D84727, #F5D3D0);
+                color: white;
+                text-align: center;
+                font-size: 20px;
+                margin-top: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .prediction-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            h1 {
+                font-family: 'Arial', sans-serif;
+                font-size: 2.5rem;
+                color: #ffffff;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            p, .stMarkdown {
+                font-family: 'Arial', sans-serif;
+                font-size: 1.2rem;
+                color: #ffffff;
+                text-align: center;
+            }
+            .feature-icon {
+                font-size: 50px;
+                color: #ffffff;
+                margin: 10px;
+                transition: transform 0.3s, color 0.3s;
+            }
+            .feature-icon:hover {
+                transform: scale(1.2);
+                color: #D84727;
+            }
+            </style>
+        """
 
 # Streamlit app
 st.title("Grape and Pomegranate Disease Prediction")
@@ -124,11 +182,13 @@ st.write("Select the type of plant and upload an image to predict the disease.")
 st.markdown('<div style="text-align: center;">'
             '<span class="feature-icon">🍇</span>'
             '<span class="feature-icon">🍈</span>'
-           
             '</div>', unsafe_allow_html=True)
 
 # Select the model
 model_choice = st.selectbox("Choose a plant type:", ["Grape", "Pomegranate"])
+
+# Apply CSS based on model choice
+st.markdown(get_css(model_choice), unsafe_allow_html=True)
 
 if model_choice == "Grape":
     model = grape_model
