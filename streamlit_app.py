@@ -42,60 +42,93 @@ except Exception as e:
     st.error(f"Error loading models: {e}")
     st.stop()
 
-# Apply custom CSS for background and prediction box styling
+# Apply custom CSS for enhanced styling
 st.markdown("""
     <style>
-    /* Apply gradient background to the entire page */
-    .reportview-container, .sidebar .sidebar-content {
-        background: linear-gradient(to bottom, #3b0a45, #000000) !important;
+    /* Apply gradient background with animated transition */
+    body {
+        background: linear-gradient(120deg, #6a1b9a, #3b0a45, #000000);
+        background-size: 300% 300%;
+        animation: gradientAnimation 15s ease infinite;
         color: #ffffff;
+        font-family: 'Roboto', sans-serif;
     }
-    /* Style for the image with rounded corners and shadow */
+
+    @keyframes gradientAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Stylish image display with rotation effect */
     .stImage img {
         max-width: 60%;
-        border-radius: 20px;
-        border: 3px solid #6a1b9a;
+        border-radius: 30px;
+        border: 5px solid #ffffff;
         margin: 0 auto;
         display: block;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        transition: box-shadow 0.3s;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
     }
     .stImage img:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+        transform: rotate(3deg) scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
     }
+
+    /* Stylish and interactive buttons */
+    .stButton button {
+        border-radius: 30px;
+        padding: 0.8rem 1.6rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #ffffff;
+        background: linear-gradient(45deg, #6a1b9a, #3b0a45);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .stButton button:hover {
+        background: linear-gradient(45deg, #3b0a45, #6a1b9a);
+        transform: scale(1.1);
+    }
+
+    /* Gradient and shadow for prediction box */
     .prediction-box {
-        border: 2px solid #6a1b9a;
-        border-radius: 10px;
-        padding: 15px;
-        background: linear-gradient(to bottom, #6a1b9a, #000000);
+        border: 2px solid #ffffff;
+        border-radius: 15px;
+        padding: 20px;
+        background: linear-gradient(45deg, #6a1b9a, #3b0a45);
         color: white;
         text-align: center;
-        font-size: 20px;
-        margin-top: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        transition: transform 0.3s, box-shadow 0.3s;
+        font-size: 22px;
+        font-weight: bold;
+        margin-top: 30px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .prediction-box:hover {
         transform: scale(1.05);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
     }
+
+    /* Enhanced title styling */
     h1 {
-        font-family: 'Arial', sans-serif;
-        font-size: 2.5rem;
+        font-family: 'Roboto', sans-serif;
+        font-size: 3rem;
+        font-weight: 900;
         color: #ffffff;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
     }
+
+    /* General text styling */
     p, .stMarkdown {
-        font-family: 'Arial', sans-serif;
-        font-size: 1.2rem;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.4rem;
         color: #ffffff;
         text-align: center;
     }
-    .stSpinner {
-        margin: 0 auto;
-        display: block;
-    }
+
     </style>
 """, unsafe_allow_html=True)
 
