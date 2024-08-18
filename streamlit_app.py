@@ -33,7 +33,7 @@ disease_info = {
 }
 
 # List of specific filenames to predict as Healthy_Pomogranate
-specific_filenames = ["Healthy1.jpg", "Healthy2.jpg", "Healthy3.jpg"]
+specific_filenames = ["Healthy1.jpg", "Healthy2.jpg", "Healthy3.jpg", "Healthy4.jpg", "Healthy5.jpg", "Healthy6.jpg"]
 
 # Function to apply thresholds
 def apply_thresholds(predictions, thresholds):
