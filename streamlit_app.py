@@ -21,6 +21,22 @@ pomegranate_thresholds = {
     "Anthracnose": 0.1
 }
 
+# Information about each disease
+disease_info = {
+    "Black Rot": "Black Rot is a fungal disease that affects grapevines. It causes dark spots on leaves and shriveled berries.",
+    "ESCA": "ESCA is a complex disease affecting grapevines. Symptoms include leaf discoloration and dieback.",
+    "Leaf Blight": "Leaf Blight causes lesions on grapevine leaves, leading to browning and leaf drop.",
+    "Cercospora": "Cercospora leaf spot affects pomegranate leaves, causing round spots that can lead to defoliation.",
+    "Bacterial_Blight": "Bacterial Blight causes water-soaked lesions on pomegranate leaves and fruit.",
+    "Anthracnose": "Anthracnose causes dark, sunken spots on pomegranate fruit, affecting its quality."
+}
+
+# Fun facts about plants
+fun_facts = {
+    "Grape": "Did you know? Grapes are one of the oldest cultivated crops, dating back 8,000 years.",
+    "Pomegranate": "Fun fact: Pomegranates can contain up to 1,400 seeds!"
+}
+
 # Function to apply thresholds
 def apply_thresholds(predictions, thresholds):
     return {cls: conf for cls, conf in predictions.items() if conf >= thresholds.get(cls, 0)}
@@ -114,7 +130,6 @@ st.write("Select the type of plant and upload an image to predict the disease.")
 st.markdown('<div style="text-align: center;">'
             '<span class="feature-icon">🍇</span>'
             '<span class="feature-icon">🍈</span>'
-           
             '</div>', unsafe_allow_html=True)
 
 # Select the model
@@ -165,6 +180,13 @@ if uploaded_file is not None:
                             <b>Confidence:</b> {confidence:.2f}
                         </div>
                     """, unsafe_allow_html=True)
+                    
+                    # Display disease information
+                    st.markdown(f"""
+                        <div class="prediction-box">
+                            <b>About {top_prediction}:</b> {disease_info.get(top_prediction, "No information available.")}
+                        </div>
+                    """, unsafe_allow_html=True)
                 else:
                     st.write("No valid predictions after applying thresholds.")
 
@@ -174,3 +196,10 @@ if uploaded_file is not None:
     except Exception as e:
         st.error(f"Error processing image: {e}")
         st.stop()
+
+# Display fun fact or tip
+st.markdown(f"""
+    <div class="prediction-box">
+        <b>Fun Fact:</b> {fun_facts.get(model_choice, "No fun fact available.")}
+    </div>
+""", unsafe_allow_html=True)
