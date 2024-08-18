@@ -42,99 +42,81 @@ except Exception as e:
     st.error(f"Error loading models: {e}")
     st.stop()
 
-# Apply custom CSS for enhanced styling
+# Apply custom CSS for background, image, and prediction box styling
 st.markdown("""
     <style>
-    /* Apply gradient background with animated transition */
-    body {
-        background: linear-gradient(120deg, #6a1b9a, #3b0a45, #000000);
-        background-size: 300% 300%;
-        animation: gradientAnimation 15s ease infinite;
+    /* Apply gradient background with an overlay image */
+    .reportview-container, .sidebar .sidebar-content {
+        background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #3b0a45, #000000);
         color: #ffffff;
-        font-family: 'Roboto', sans-serif;
     }
-
-    @keyframes gradientAnimation {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    /* Stylish image display with rotation effect */
+    /* Reduce image size with rounded corners and shadow */
     .stImage img {
-        max-width: 60%;
-        border-radius: 30px;
-        border: 5px solid #ffffff;
+        max-width: 40%; /* Reduced size */
+        border-radius: 20px;
+        border: 3px solid #6a1b9a;
         margin: 0 auto;
         display: block;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-        transition: transform 0.5s ease, box-shadow 0.5s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.3s;
     }
     .stImage img:hover {
-        transform: rotate(3deg) scale(1.05);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
     }
-
-    /* Stylish and interactive buttons */
-    .stButton button {
-        border-radius: 30px;
-        padding: 0.8rem 1.6rem;
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #ffffff;
-        background: linear-gradient(45deg, #6a1b9a, #3b0a45);
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .stButton button:hover {
-        background: linear-gradient(45deg, #3b0a45, #6a1b9a);
-        transform: scale(1.1);
-    }
-
-    /* Gradient and shadow for prediction box */
+    /* Style for the prediction box with gradient background and shadow */
     .prediction-box {
-        border: 2px solid #ffffff;
-        border-radius: 15px;
-        padding: 20px;
-        background: linear-gradient(45deg, #6a1b9a, #3b0a45);
+        border: 2px solid #6a1b9a;
+        border-radius: 10px;
+        padding: 15px;
+        background: linear-gradient(to bottom, #6a1b9a, #000000);
         color: white;
         text-align: center;
-        font-size: 22px;
-        font-weight: bold;
-        margin-top: 30px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        font-size: 20px;
+        margin-top: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s, box-shadow 0.3s;
     }
     .prediction-box:hover {
         transform: scale(1.05);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
     }
-
-    /* Enhanced title styling */
     h1 {
-        font-family: 'Roboto', sans-serif;
-        font-size: 3rem;
-        font-weight: 900;
+        font-family: 'Arial', sans-serif;
+        font-size: 2.5rem;
         color: #ffffff;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
-
-    /* General text styling */
     p, .stMarkdown {
-        font-family: 'Roboto', sans-serif;
-        font-size: 1.4rem;
+        font-family: 'Arial', sans-serif;
+        font-size: 1.2rem;
         color: #ffffff;
         text-align: center;
     }
-
+    /* Add subtle animation to icons or any additional features */
+    .feature-icon {
+        font-size: 50px;
+        color: #ffffff;
+        margin: 10px;
+        transition: transform 0.3s, color 0.3s;
+    }
+    .feature-icon:hover {
+        transform: scale(1.2);
+        color: #6a1b9a;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # Streamlit app
 st.title("Grape and Pomegranate Disease Prediction")
 st.write("Select the type of plant and upload an image to predict the disease.")
+
+# Add background feature icons
+st.markdown('<div style="text-align: center;">'
+            '<span class="feature-icon">🍇</span>'
+            '<span class="feature-icon">🍈</span>'
+            '<span class="feature-icon">🌱</span>'
+            '</div>', unsafe_allow_html=True)
 
 # Select the model
 model_choice = st.selectbox("Choose a plant type:", ["Grape", "Pomegranate"])
