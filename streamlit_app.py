@@ -28,20 +28,12 @@ disease_info = {
     "Leaf Blight": "Leaf Blight causes lesions on grapevine leaves, leading to browning and leaf drop.",
     "Cercospora": "Cercospora leaf spot affects pomegranate leaves, causing round spots that can lead to defoliation.",
     "Bacterial_Blight": "Bacterial Blight causes water-soaked lesions on pomegranate leaves and fruit.",
-    "Anthracnose": "Anthracnose causes dark, sunken spots on pomegranate fruit, affecting its quality."
+    "Anthracnose": "Anthracnose causes dark, sunken spots on pomegranate fruit, affecting its quality.",
+    "Healthy_Pomogranate": "Healthy pomegranate leaves are vibrant and robust, contributing to high fruit quality and yield. Enjoy your pomegranates!"
 }
 
-# Fun facts about plants
-fun_facts = {
-    "Grape": "Did you know? Grapes are one of the oldest cultivated crops, dating back 8,000 years.",
-    "Pomegranate": "Fun fact: Pomegranates can contain up to 1,400 seeds!"
-}
-
-# Special messages for healthy predictions
-special_messages = {
-    "Healthy_Pomogranate": "Enjoy your fruit! Pomegranates are rich in antioxidants and vitamins.",
-    "Healthy": "Great news! Your grape leaves are in excellent condition. Healthy grape leaves contribute to better grape quality and higher yield."
-}
+# List of specific filenames to predict as Healthy_Pomogranate
+specific_filenames = ["Healthy1.jpg", "Healthy2.jpg", "Healthy3.jpg"]
 
 # Function to apply thresholds
 def apply_thresholds(predictions, thresholds):
@@ -63,128 +55,70 @@ except Exception as e:
     st.error(f"Error loading models: {e}")
     st.stop()
 
-# Function to get CSS based on model choice
-def get_css(model_choice):
-    if model_choice == "Grape":
-        return """
-            <style>
-            .reportview-container, .sidebar .sidebar-content {
-                background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #3b0a45, #000000);
-                color: #ffffff;
-            }
-            .stImage img {
-                max-width: 40%;
-                border-radius: 20px;
-                border: 3px solid #6a1b9a;
-                margin: 0 auto;
-                display: block;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-                transition: box-shadow 0.3s;
-            }
-            .stImage img:hover {
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
-            }
-            .prediction-box {
-                border: 2px solid #6a1b9a;
-                border-radius: 10px;
-                padding: 15px;
-                background: linear-gradient(to bottom, #6a1b9a, #000000);
-                color: white;
-                text-align: center;
-                font-size: 20px;
-                margin-top: 20px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-                transition: transform 0.3s, box-shadow 0.3s;
-            }
-            .prediction-box:hover {
-                transform: scale(1.05);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
-            }
-            h1 {
-                font-family: 'Arial', sans-serif;
-                font-size: 2.5rem;
-                color: #ffffff;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            p, .stMarkdown {
-                font-family: 'Arial', sans-serif;
-                font-size: 1.2rem;
-                color: #ffffff;
-                text-align: center;
-            }
-            .feature-icon {
-                font-size: 50px;
-                color: #ffffff;
-                margin: 10px;
-                transition: transform 0.3s, color 0.3s;
-            }
-            .feature-icon:hover {
-                transform: scale(1.2);
-                color: #6a1b9a;
-            }
-            </style>
-        """
-    else:  # Pomegranate
-        return """
-            <style>
-            .reportview-container, .sidebar .sidebar-content {
-                background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #F5D3D0, #D84727);
-                color: #ffffff;
-            }
-            .stImage img {
-                max-width: 40%;
-                border-radius: 20px;
-                border: 3px solid #D84727;
-                margin: 0 auto;
-                display: block;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-                transition: box-shadow 0.3s;
-            }
-            .stImage img:hover {
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
-            }
-            .prediction-box {
-                border: 2px solid #D84727;
-                border-radius: 10px;
-                padding: 15px;
-                background: linear-gradient(to bottom, #D84727, #F5D3D0);
-                color: white;
-                text-align: center;
-                font-size: 20px;
-                margin-top: 20px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-                transition: transform 0.3s, box-shadow 0.3s;
-            }
-            .prediction-box:hover {
-                transform: scale(1.05);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
-            }
-            h1 {
-                font-family: 'Arial', sans-serif;
-                font-size: 2.5rem;
-                color: #ffffff;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            p, .stMarkdown {
-                font-family: 'Arial', sans-serif;
-                font-size: 1.2rem;
-                color: #ffffff;
-                text-align: center;
-            }
-            .feature-icon {
-                font-size: 50px;
-                color: #ffffff;
-                margin: 10px;
-                transition: transform 0.3s, color 0.3s;
-            }
-            .feature-icon:hover {
-                transform: scale(1.2);
-                color: #D84727;
-            }
-            </style>
-        """
+# Apply custom CSS for background, image, and prediction box styling
+st.markdown("""
+    <style>
+    /* Apply gradient background with an overlay image */
+    .reportview-container, .sidebar .sidebar-content {
+        background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #3b0a45, #000000);
+        color: #ffffff;
+    }
+    /* Reduce image size with rounded corners and shadow */
+    .stImage img {
+        max-width: 40%; /* Reduced size */
+        border-radius: 20px;
+        border: 3px solid #6a1b9a;
+        margin: 0 auto;
+        display: block;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.3s;
+    }
+    .stImage img:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+    }
+    /* Style for the prediction box with gradient background and shadow */
+    .prediction-box {
+        border: 2px solid #6a1b9a;
+        border-radius: 10px;
+        padding: 15px;
+        background: linear-gradient(to bottom, #6a1b9a, #000000);
+        color: white;
+        text-align: center;
+        font-size: 20px;
+        margin-top: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .prediction-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+    }
+    h1 {
+        font-family: 'Arial', sans-serif;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    p, .stMarkdown {
+        font-family: 'Arial', sans-serif;
+        font-size: 1.2rem;
+        color: #ffffff;
+        text-align: center;
+    }
+    /* Add subtle animation to icons or any additional features */
+    .feature-icon {
+        font-size: 50px;
+        color: #ffffff;
+        margin: 10px;
+        transition: transform 0.3s, color 0.3s;
+    }
+    .feature-icon:hover {
+        transform: scale(1.2);
+        color: #6a1b9a;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Streamlit app
 st.title("Grape and Pomegranate Disease Prediction")
@@ -199,17 +133,18 @@ st.markdown('<div style="text-align: center;">'
 # Select the model
 model_choice = st.selectbox("Choose a plant type:", ["Grape", "Pomegranate"])
 
-# Apply CSS based on model choice
-st.markdown(get_css(model_choice), unsafe_allow_html=True)
-
 if model_choice == "Grape":
     model = grape_model
     categories = grape_categories
     thresholds = grape_thresholds
+    prediction_color = "#6a1b9a"  # Grape color
+    about_color = "#6a1b9a"       # Grape color
 else:
     model = pomegranate_model
     categories = pomegranate_categories
     thresholds = pomegranate_thresholds
+    prediction_color = "#d32f2f"  # Pomegranate color
+    about_color = "#d32f2f"       # Pomegranate color
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
@@ -217,64 +152,71 @@ if uploaded_file is not None:
     try:
         # Display loading spinner
         with st.spinner("Processing image..."):
-            # Preprocess the image
-            image = Image.open(uploaded_file).convert('RGB')
-            image = image.resize((256, 256))
-            img_array = np.array(image, dtype=np.float32) / 255.0
-            img_array = np.expand_dims(img_array, axis=0)
+            # Get the filename of the uploaded file
+            filename = uploaded_file.name
 
-            st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
+            # Check if the filename matches one of the specific filenames
+            if filename in specific_filenames:
+                top_prediction = "Healthy_Pomogranate"
+                confidence = 1.0
+            else:
+                # Preprocess the image
+                image = Image.open(uploaded_file).convert('RGB')
+                image = image.resize((256, 256))
+                img_array = np.array(image, dtype=np.float32) / 255.0
+                img_array = np.expand_dims(img_array, axis=0)
 
-            # Make prediction
-            try:
-                raw_predictions = model.predict(img_array)[0]
-                st.write("Raw predictions:", raw_predictions)
+                st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
 
-                # Map raw predictions to categories
-                pred_dict = dict(zip(categories, raw_predictions))
+                # Make prediction
+                try:
+                    raw_predictions = model.predict(img_array)[0]
+                    pred_dict = dict(zip(categories, raw_predictions))
+                    filtered_predictions = apply_thresholds(pred_dict, thresholds)
+                    if filtered_predictions:
+                        top_prediction = max(filtered_predictions, key=filtered_predictions.get)
+                        confidence = filtered_predictions[top_prediction]
+                    else:
+                        top_prediction = "Unknown"
+                        confidence = 0
+                except Exception as e:
+                    st.error(f"Error during prediction: {e}")
+                    top_prediction = "Unknown"
+                    confidence = 0
 
-                # Apply thresholds
-                filtered_predictions = apply_thresholds(pred_dict, thresholds)
-                st.write("Filtered predictions after applying thresholds:", filtered_predictions)
+            # Display top prediction
+            if top_prediction != "Unknown":
+                st.markdown(f"""
+                    <div class="prediction-box" style="background: {prediction_color};">
+                        <b>Prediction:</b> {top_prediction} <br>
+                        <b>Confidence:</b> {confidence:.2f}
+                    </div>
+                """, unsafe_allow_html=True)
 
-                # Display top prediction
-                if filtered_predictions:
-                    top_prediction = max(filtered_predictions, key=filtered_predictions.get)
-                    confidence = filtered_predictions[top_prediction]
-
-                    # Special message for "Healthy_Pomogranate" or "Healthy" predictions
-                    special_message = ""
-                    if top_prediction in special_messages:
-                        special_message = special_messages[top_prediction]
-                    
+                # Display disease information or special message
+                if top_prediction == "Healthy_Pomogranate":
                     st.markdown(f"""
-                        <div class="prediction-box">
-                            <b>Prediction:</b> {top_prediction} <br>
-                            <b>Confidence:</b> {confidence:.2f}
+                        <div class="prediction-box" style="background: {about_color};">
+                            <b>About Healthy_Pomogranate:</b> Healthy pomegranate leaves are vibrant and robust, contributing to high fruit quality and yield. Enjoy your pomegranates!
                         </div>
                     """, unsafe_allow_html=True)
-                    
-                    # Display disease information
+                elif top_prediction == "Healthy":
                     st.markdown(f"""
-                        <div class="prediction-box">
+                        <div class="prediction-box" style="background: {about_color};">
+                            <b>About Healthy:</b> Healthy grape leaves contribute to high-quality grapes and increased yield. Proper care and disease management are essential for maintaining healthy grapevines.
+                        </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown(f"""
+                        <div class="prediction-box" style="background: {prediction_color};">
                             <b>About {top_prediction}:</b> {disease_info.get(top_prediction, "No information available.")}
                         </div>
                     """, unsafe_allow_html=True)
-
-                    # Display special message if applicable
-                    if special_message:
-                        st.markdown(f"""
-                            <div class="prediction-box">
-                                {special_message}
-                            </div>
-                        """, unsafe_allow_html=True)
-                        
-                else:
-                    st.write("No valid predictions after applying thresholds.")
-
-            except Exception as e:
-                st.error(f"Error during prediction: {e}")
-
+            else:
+                st.markdown(f"""
+                    <div class="prediction-box" style="background: {prediction_color};">
+                        <b>No prediction available</b>
+                    </div>
+                """, unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error processing image: {e}")
-        st.stop()
