@@ -3,87 +3,213 @@ from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
 
-# Define a function to load the model and cache it
+# Define categories and thresholds for both models
+grape_categories = ["Black Rot", "ESCA", "Healthy", "Leaf Blight"]
+pomegranate_categories = ["Healthy_Pomogranate", "Cercospora", "Bacterial_Blight", "Anthracnose"]
+
+grape_thresholds = {
+    "Black Rot": 0.1,
+    "ESCA": 0.1,
+    "Healthy": 0.1,
+    "Leaf Blight": 0.1
+}
+
+pomegranate_thresholds = {
+    "Healthy_Pomogranate": 0.01,
+    "Cercospora": 0.1,
+    "Bacterial_Blight": 0.5,
+    "Anthracnose": 0.1
+}
+
+# Information about each disease
+disease_info = {
+    "Black Rot": "Black Rot is a fungal disease that affects grapevines. It causes dark spots on leaves and shriveled berries.",
+    "ESCA": "ESCA is a complex disease affecting grapevines. Symptoms include leaf discoloration and dieback.",
+    "Leaf Blight": "Leaf Blight causes lesions on grapevine leaves, leading to browning and leaf drop.",
+    "Cercospora": "Cercospora leaf spot affects pomegranate leaves, causing round spots that can lead to defoliation.",
+    "Bacterial_Blight": "Bacterial Blight causes water-soaked lesions on pomegranate leaves and fruit.",
+    "Anthracnose": "Anthracnose causes dark, sunken spots on pomegranate fruit, affecting its quality."
+}
+
+# Fun facts about plants
+fun_facts = {
+    "Grape": "Did you know? Grapes are one of the oldest cultivated crops, dating back 8,000 years.",
+    "Pomegranate": "Fun fact: Pomegranates can contain up to 1,400 seeds!"
+}
+
+# Special messages for healthy predictions
+special_messages = {
+    "Healthy_Pomogranate": "Enjoy your fruit! Pomegranates are rich in antioxidants and vitamins.",
+    "Healthy": "Great news! Your grape leaves are in excellent condition. Healthy grape leaves contribute to better grape quality and higher yield."
+}
+
+# Function to apply thresholds
+def apply_thresholds(predictions, thresholds):
+    return {cls: conf for cls, conf in predictions.items() if conf >= thresholds.get(cls, 0)}
+
+# Function to load models and cache them
 @st.cache_resource
 def load_model_cached(model_path):
     return load_model(model_path)
 
-# Load the trained model
-model_path = 'grape_and_Pomogranate_disease_streamlit.h5'
+# Load the grape and pomegranate models
+grape_model_path = 'grape_and_Pomogranate_disease_2.0.h5'
+pomegranate_model_path = 'grape_and_Pomogranate_disease_2.0.h5'
+
 try:
-    model = load_model_cached(model_path)
-    st.success("Model loaded successfully!")
+    grape_model = load_model_cached(grape_model_path)
+    pomegranate_model = load_model_cached(pomegranate_model_path)
 except Exception as e:
-    st.error(f"Error loading model: {e}")
+    st.error(f"Error loading models: {e}")
     st.stop()
 
-# Define categories
-categories = ["Black Rot", "ESCA", "Healthy", "Leaf Blight", "Healthy_Pomogranate", "Cercospora", "Bacterial_Blight", "Anthracnose"]
-
-# Apply custom CSS for background and prediction box styling
-st.markdown("""
-    <style>
-    /* Apply gradient background to the entire page */
-    .reportview-container, .sidebar .sidebar-content {
-        background: linear-gradient(to bottom, #3b0a45, #000000) !important;
-        color: #ffffff;
-    }
-    /* Style for the image with rounded corners and shadow */
-    .stImage img {
-        max-width: 60%;
-        border-radius: 20px; /* Smooth, rounded corners */
-        border: 3px solid #6a1b9a; /* Optional: add border color matching the theme */
-        margin: 0 auto;
-        display: block;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow effect */
-        transition: box-shadow 0.3s; /* Smooth transition */
-    }
-    .stImage img:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7); /* Enhanced shadow on hover */
-    }
-    /* Style for the prediction box with gradient background and shadow */
-    .prediction-box {
-        border: 2px solid #6a1b9a;
-        border-radius: 10px;
-        padding: 15px;
-        background: linear-gradient(to bottom, #6a1b9a, #000000); /* Dark violet to black gradient */
-        color: white;
-        text-align: center;
-        font-size: 20px;
-        margin-top: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow effect */
-        transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition */
-    }
-    .prediction-box:hover {
-        transform: scale(1.05); /* Slightly enlarge on hover */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7); /* Enhance shadow on hover */
-    }
-    /* Style for the title */
-    h1 {
-        font-family: 'Arial', sans-serif;
-        font-size: 2.5rem;
-        color: #ffffff;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    /* Style for the text */
-    p, .stMarkdown {
-        font-family: 'Arial', sans-serif;
-        font-size: 1.2rem;
-        color: #ffffff;
-        text-align: center;
-    }
-    /* Loader styles */
-    .stSpinner {
-        margin: 0 auto;
-        display: block;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Function to get CSS based on model choice
+def get_css(model_choice):
+    if model_choice == "Grape":
+        return """
+            <style>
+            .reportview-container, .sidebar .sidebar-content {
+                background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #3b0a45, #000000);
+                color: #ffffff;
+            }
+            .stImage img {
+                max-width: 40%;
+                border-radius: 20px;
+                border: 3px solid #6a1b9a;
+                margin: 0 auto;
+                display: block;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: box-shadow 0.3s;
+            }
+            .stImage img:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            .prediction-box {
+                border: 2px solid #6a1b9a;
+                border-radius: 10px;
+                padding: 15px;
+                background: linear-gradient(to bottom, #6a1b9a, #000000);
+                color: white;
+                text-align: center;
+                font-size: 20px;
+                margin-top: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .prediction-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            h1 {
+                font-family: 'Arial', sans-serif;
+                font-size: 2.5rem;
+                color: #ffffff;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            p, .stMarkdown {
+                font-family: 'Arial', sans-serif;
+                font-size: 1.2rem;
+                color: #ffffff;
+                text-align: center;
+            }
+            .feature-icon {
+                font-size: 50px;
+                color: #ffffff;
+                margin: 10px;
+                transition: transform 0.3s, color 0.3s;
+            }
+            .feature-icon:hover {
+                transform: scale(1.2);
+                color: #6a1b9a;
+            }
+            </style>
+        """
+    else:  # Pomegranate
+        return """
+            <style>
+            .reportview-container, .sidebar .sidebar-content {
+                background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #F5D3D0, #D84727);
+                color: #ffffff;
+            }
+            .stImage img {
+                max-width: 40%;
+                border-radius: 20px;
+                border: 3px solid #D84727;
+                margin: 0 auto;
+                display: block;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: box-shadow 0.3s;
+            }
+            .stImage img:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            .prediction-box {
+                border: 2px solid #D84727;
+                border-radius: 10px;
+                padding: 15px;
+                background: linear-gradient(to bottom, #D84727, #F5D3D0);
+                color: white;
+                text-align: center;
+                font-size: 20px;
+                margin-top: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .prediction-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+            }
+            h1 {
+                font-family: 'Arial', sans-serif;
+                font-size: 2.5rem;
+                color: #ffffff;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            p, .stMarkdown {
+                font-family: 'Arial', sans-serif;
+                font-size: 1.2rem;
+                color: #ffffff;
+                text-align: center;
+            }
+            .feature-icon {
+                font-size: 50px;
+                color: #ffffff;
+                margin: 10px;
+                transition: transform 0.3s, color 0.3s;
+            }
+            .feature-icon:hover {
+                transform: scale(1.2);
+                color: #D84727;
+            }
+            </style>
+        """
 
 # Streamlit app
-st.title("Grape And Pomogranate Disease Prediction")
-st.write("Upload an image of a grape leaf or Pomogranate fruit to predict the disease.")
+st.title("Grape and Pomegranate Disease Prediction")
+st.write("Select the type of plant and upload an image to predict the disease.")
+
+# Add background feature icons
+st.markdown('<div style="text-align: center;">'
+            '<span class="feature-icon">🍇</span>'
+            '<span class="feature-icon">🍈</span>'
+            '</div>', unsafe_allow_html=True)
+
+# Select the model
+model_choice = st.selectbox("Choose a plant type:", ["Grape", "Pomegranate"])
+
+# Apply CSS based on model choice
+st.markdown(get_css(model_choice), unsafe_allow_html=True)
+
+if model_choice == "Grape":
+    model = grape_model
+    categories = grape_categories
+    thresholds = grape_thresholds
+else:
+    model = pomegranate_model
+    categories = pomegranate_categories
+    thresholds = pomegranate_thresholds
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
@@ -91,27 +217,60 @@ if uploaded_file is not None:
     try:
         # Display loading spinner
         with st.spinner("Processing image..."):
-            image = Image.open(uploaded_file)
+            # Preprocess the image
+            image = Image.open(uploaded_file).convert('RGB')
             image = image.resize((256, 256))
-            img_array = np.array(image) / 255.0
-            img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+            img_array = np.array(image, dtype=np.float32) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
 
             st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
-            
+
             # Make prediction
             try:
-                predictions = model.predict(img_array)
-                predicted_class = np.argmax(predictions[0])
-                predicted_label = categories[predicted_class]
-                confidence = predictions[0][predicted_class]
+                raw_predictions = model.predict(img_array)[0]
+                st.write("Raw predictions:", raw_predictions)
 
-                # Display prediction in a styled box with bold text
-                st.markdown(f"""
-                    <div class="prediction-box">
-                        <b>Prediction:</b> {predicted_label} <br>
-                        <b>Confidence:</b> {confidence:.2f}
-                    </div>
-                """, unsafe_allow_html=True)
+                # Map raw predictions to categories
+                pred_dict = dict(zip(categories, raw_predictions))
+
+                # Apply thresholds
+                filtered_predictions = apply_thresholds(pred_dict, thresholds)
+                st.write("Filtered predictions after applying thresholds:", filtered_predictions)
+
+                # Display top prediction
+                if filtered_predictions:
+                    top_prediction = max(filtered_predictions, key=filtered_predictions.get)
+                    confidence = filtered_predictions[top_prediction]
+
+                    # Special message for "Healthy_Pomogranate" or "Healthy" predictions
+                    special_message = ""
+                    if top_prediction in special_messages:
+                        special_message = special_messages[top_prediction]
+                    
+                    st.markdown(f"""
+                        <div class="prediction-box">
+                            <b>Prediction:</b> {top_prediction} <br>
+                            <b>Confidence:</b> {confidence:.2f}
+                        </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Display disease information
+                    st.markdown(f"""
+                        <div class="prediction-box">
+                            <b>About {top_prediction}:</b> {disease_info.get(top_prediction, "No information available.")}
+                        </div>
+                    """, unsafe_allow_html=True)
+
+                    # Display special message if applicable
+                    if special_message:
+                        st.markdown(f"""
+                            <div class="prediction-box">
+                                {special_message}
+                            </div>
+                        """, unsafe_allow_html=True)
+                        
+                else:
+                    st.write("No valid predictions after applying thresholds.")
 
             except Exception as e:
                 st.error(f"Error during prediction: {e}")
