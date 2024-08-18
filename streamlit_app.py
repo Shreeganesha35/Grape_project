@@ -34,20 +34,24 @@ def load_model_cached(model_path):
 grape_model_path = 'grape_and_Pomogranate_disease_2.0.h5'
 pomegranate_model_path = 'grape_and_Pomogranate_disease_2.0.h5'
 
-grape_model = load_model_cached(grape_model_path)
-pomegranate_model = load_model_cached(pomegranate_model_path)
+try:
+    grape_model = load_model_cached(grape_model_path)
+    pomegranate_model = load_model_cached(pomegranate_model_path)
+except Exception as e:
+    st.error(f"Error loading models: {e}")
+    st.stop()
 
-# Apply custom CSS for background and prediction box styling
+# Apply custom CSS for background, image, and prediction box styling
 st.markdown("""
     <style>
-    /* Apply gradient background to the entire page with subtle pattern */
+    /* Apply gradient background with an overlay image */
     .reportview-container, .sidebar .sidebar-content {
-        background: linear-gradient(to bottom, #3b0a45, #000000), url('https://www.transparenttextures.com/patterns/brick-wall.png');
+        background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), linear-gradient(to bottom, #3b0a45, #000000);
         color: #ffffff;
     }
-    /* Style for the image with rounded corners and shadow */
+    /* Reduce image size with rounded corners and shadow */
     .stImage img {
-        max-width: 40%; /* Reduced image size */
+        max-width: 40%; /* Reduced size */
         border-radius: 20px;
         border: 3px solid #6a1b9a;
         margin: 0 auto;
@@ -58,6 +62,7 @@ st.markdown("""
     .stImage img:hover {
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
     }
+    /* Style for the prediction box with gradient background and shadow */
     .prediction-box {
         border: 2px solid #6a1b9a;
         border-radius: 10px;
@@ -87,9 +92,16 @@ st.markdown("""
         color: #ffffff;
         text-align: center;
     }
-    .stSpinner {
-        margin: 0 auto;
-        display: block;
+    /* Add subtle animation to icons or any additional features */
+    .feature-icon {
+        font-size: 50px;
+        color: #ffffff;
+        margin: 10px;
+        transition: transform 0.3s, color 0.3s;
+    }
+    .feature-icon:hover {
+        transform: scale(1.2);
+        color: #6a1b9a;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -97,6 +109,13 @@ st.markdown("""
 # Streamlit app
 st.title("Grape and Pomegranate Disease Prediction")
 st.write("Select the type of plant and upload an image to predict the disease.")
+
+# Add background feature icons
+st.markdown('<div style="text-align: center;">'
+            '<span class="feature-icon">🍇</span>'
+            '<span class="feature-icon">🍈</span>'
+           
+            '</div>', unsafe_allow_html=True)
 
 # Select the model
 model_choice = st.selectbox("Choose a plant type:", ["Grape", "Pomegranate"])
