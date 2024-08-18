@@ -7,20 +7,6 @@ from PIL import Image
 grape_categories = ["Black Rot", "ESCA", "Healthy", "Leaf Blight"]
 pomegranate_categories = ["Healthy_Pomogranate", "Cercospora", "Bacterial_Blight", "Anthracnose"]
 
-grape_thresholds = {
-    "Black Rot": 0.1,
-    "ESCA": 0.1,
-    "Healthy": 0.1,
-    "Leaf Blight": 0.1
-}
-
-pomegranate_thresholds = {
-    "Healthy_Pomogranate": 0.01,
-    "Cercospora": 0.1,
-    "Bacterial_Blight": 0.5,
-    "Anthracnose": 0.1
-}
-
 # Information about each disease
 disease_info = {
     "Black Rot": "Black Rot is a fungal disease that affects grapevines. It causes dark spots on leaves and shriveled berries.",
@@ -35,17 +21,13 @@ disease_info = {
 # List of specific filenames to predict as Healthy_Pomogranate
 specific_filenames = ["Healthy1.jpg", "Healthy2.jpg", "Healthy3.jpg", "Healthy4.jpg", "Healthy5.jpg", "Healthy6.jpg"]
 
-# Function to apply thresholds
-def apply_thresholds(predictions, thresholds):
-    return {cls: conf for cls, conf in predictions.items() if conf >= thresholds.get(cls, 0)}
-
 # Function to load models and cache them
 @st.cache_resource
 def load_model_cached(model_path):
     return load_model(model_path)
 
 # Load the grape and pomegranate models
-grape_model_path = 'grape_and_Pomogranate_disease_2.0.h5'
+grape_model_path = 'grape__disease_1.0.h5'
 pomegranate_model_path = 'Pomogranate_disease_1.0.h5'
 
 try:
@@ -136,13 +118,11 @@ model_choice = st.selectbox("Choose a plant type:", ["Grape", "Pomegranate"])
 if model_choice == "Grape":
     model = grape_model
     categories = grape_categories
-    thresholds = grape_thresholds
     prediction_color = "#6a1b9a"  # Grape color
     about_color = "#6a1b9a"       # Grape color
 else:
     model = pomegranate_model
     categories = pomegranate_categories
-    thresholds = pomegranate_thresholds
     prediction_color = "#d32f2f"  # Pomegranate color
     about_color = "#d32f2f"       # Pomegranate color
 
@@ -170,15 +150,9 @@ if uploaded_file is not None:
 
                 # Make prediction
                 try:
-                    raw_predictions = model.predict(img_array)[0]
-                    pred_dict = dict(zip(categories, raw_predictions))
-                    filtered_predictions = apply_thresholds(pred_dict, thresholds)
-                    if filtered_predictions:
-                        top_prediction = max(filtered_predictions, key=filtered_predictions.get)
-                        confidence = filtered_predictions[top_prediction]
-                    else:
-                        top_prediction = "Unknown"
-                        confidence = 0
+                    prediction = model.predict(img_array)
+                    top_prediction = categories[np.argmax(prediction)]
+                    confidence = np.max(prediction)
                 except Exception as e:
                     st.error(f"Error during prediction: {e}")
                     top_prediction = "Unknown"
