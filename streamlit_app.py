@@ -27,7 +27,7 @@ def load_model_cached(model_path):
     return load_model(model_path)
 
 # Load the grape and pomegranate models
-grape_model_path = 'grape_and_Pomogrante_disease_2.0.h5'
+grape_model_path = 'grape_and_Pomogranate_disease_2.0.h5'
 pomegranate_model_path = 'Pomogranate_disease_1.0.h5'
 
 try:
